@@ -2,7 +2,7 @@
 library(polyester)
 library(Biostrings)
 
-fold_changes = matrix(c(4,4,rep(1,18),1,1,4,4,rep(1,16)), nrow=20)
+fold_changes = matrix(c(4,1,rep(1,18),1,1,4,4,rep(1,16)), nrow=20)
 
 # FASTA annotation
 fasta_file = system.file('extdata', 'chr22.fa', package='polyester')
