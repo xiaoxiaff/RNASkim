@@ -51,3 +51,14 @@ third_party/
 
 # python
 *.pyc
+
+src/sim/*.fa
+src/sim/*.fasta
+src/sim/*.cf
+src/sim/*.sk
+src/sim/*.pb
+src/sim/estimation
+src/sim/overlap_map
+
+src/sim/data-gen/*.fa
+src/sim/data-gen/simulated_reads/
