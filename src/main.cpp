@@ -926,7 +926,7 @@ void PrintVersion() {
 
 void usage() {
   cout << "kallisto " << KALLISTO_VERSION << endl << endl
-       << "Usage: kallisto <CMD> [arguments] .." << endl << endl
+       << "Usage: kallisto <CMD1> [arguments] .." << endl << endl
        << "Where <CMD> can be one of:" << endl << endl
        << "    index         Builds a kallisto index "<< endl
        << "    quant         Runs the quantification algorithm " << endl

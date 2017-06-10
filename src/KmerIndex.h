@@ -93,8 +93,12 @@ struct DBGraph {
 
 
 struct KmerIndex {
-  KmerIndex(const ProgramOptions& opt) : k(opt.k), num_trans(0), skip(opt.skip), target_seqs_loaded(false) {
+  KmerIndex(const ProgramOptions& opt) : k(opt.k), num_trans(0), skip(opt.skip), target_seqs_loaded(false), m_path(opt.index) {
     //LoadTranscripts(opt.transfasta);
+
+    std::size_t found = m_path.find_last_of("/\\");
+    std::cout<<"path:"<<m_path.substr(0, found)<<std::endl;
+    m_logPath = m_path.substr(0, found) + "/duck.log";
   }
 
   ~KmerIndex() {}
@@ -129,6 +133,8 @@ struct KmerIndex {
   int num_trans; // number of targets
   int skip;
 
+  std::string m_path;
+
   KmerHashTable<KmerEntry, KmerHash> kmap;
   EcMap ecmap;
   DBGraph dbGraph;
@@ -136,6 +142,8 @@ struct KmerIndex {
   const size_t INDEX_VERSION = 10; // increase this every time you change the fileformat
 
   std::vector<int> target_lens_;
+
+  std::string m_logPath;
 
   std::vector<std::string> target_names_;
   std::vector<std::string> target_seqs_; // populated on demand

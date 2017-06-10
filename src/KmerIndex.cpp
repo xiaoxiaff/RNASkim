@@ -1,6 +1,8 @@
 #include "KmerIndex.h"
 #include <algorithm>
 #include <random>
+#include <fstream>
+#include <experimental/filesystem>
 #include <ctype.h>
 #include <zlib.h>
 #include <unordered_set>
@@ -181,6 +183,9 @@ void KmerIndex::BuildTranscripts(const ProgramOptions& opt) {
 
 void KmerIndex::BuildDeBruijnGraph(const ProgramOptions& opt, const std::vector<std::string>& seqs) {
   
+  //std::experimental::filesystem::path path = m_path;
+  //path = path.parent_path();
+  //std::cout<<path<<std::endl;
 
   std::cerr << "[build] counting k-mers ... "; std::cerr.flush();
   // gather all k-mers
@@ -194,6 +199,7 @@ void KmerIndex::BuildDeBruijnGraph(const ProgramOptions& opt, const std::vector<
     }
   }
   std::cerr << "done." << std::endl;
+
   
   std::cerr << "[build] building target de Bruijn graph ... "; std::cerr.flush();
   // find out how much we can skip ahead for each k-mer.
@@ -512,6 +518,10 @@ void KmerIndex::BuildEquivalenceClasses(const ProgramOptions& opt, const std::ve
   std::cerr << " done" << std::endl;
   std::cerr << "[build] target de Bruijn graph has " << dbGraph.contigs.size() << " contigs and contains "  << kmap.size() << " k-mers " << std::endl;
 
+  std::ofstream outfile;
+  outfile.open(m_logPath, std::ios_base::app);
+  outfile<<"kmers:"<<kmap.size()<<", "<<"contigs:"<<dbGraph.contigs.size()<<"\n";
+  outfile.close();
 
   
 
@@ -622,6 +632,8 @@ void KmerIndex::FixSplitContigs(const ProgramOptions& opt, std::vector<std::vect
 
 void KmerIndex::write(const std::string& index_out, bool writeKmerTable) {
   std::ofstream out;
+  std::cout<<"index path:"<<index_out<<std::endl;
+
   out.open(index_out, std::ios::out | std::ios::binary);
 
   if (!out.is_open()) {
