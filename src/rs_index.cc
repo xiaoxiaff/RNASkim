@@ -19,6 +19,7 @@
 #include "rs_common.h"
 #include "rs_thread.h"
 
+
 using std::string;
 using std::pair;
 using std::vector;
@@ -127,6 +128,10 @@ public:
 
   void run() {
     vector<string> ids, seqs;
+    long alreadyExist = 0;
+    long consecutiveTimes = 0;
+    long nonExist = 0;
+    long nonContsecutiveTimes = 0;
     while(reader_->read(&ids, &seqs) != 0) {
       for (size_t i = 0; i < ids.size(); i++) {
         string whole_seq = seqs[i];
@@ -153,13 +158,17 @@ public:
                start ++) {
             StringPiece temp (seq.data() + start, FLAGS_rs_length);
             if (!dup_bloom_->contain(temp)) {
+              nonExist++;
               if (!is_consecutive) {
+                consecutiveTimes++;
                 // record the first position of the consecutive region
                 last_start = start;
               }
               is_consecutive = true;
             } else {
+              alreadyExist++;
               if (is_consecutive) {
+                nonContsecutiveTimes++;
                 // save the current consecutive region
                 auto meta = transcript->add_signatures();
                 meta->set_seq(seq.substr(last_start,
@@ -183,6 +192,13 @@ public:
       }
     }
     dumper_->dump(gene_signatures_);
+    std::ofstream outputFile;
+    outputFile.open("rnaSkimDuckIndex");
+    outputFile << alreadyExist << std::endl;
+    outputFile << nonExist << std::endl;
+    outputFile << consecutiveTimes << std::endl;
+    outputFile << nonContsecutiveTimes << std::endl;
+    outputFile.close();
   }
 
 private:
